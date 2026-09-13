@@ -4,19 +4,32 @@ import GaneshHero from '../components/GaneshHero';
 import Diyas from '../components/Diyas';
 
 export default function Module2Celebration({ onNext, playBellSound }) {
+  const [showNamePopup, setShowNamePopup] = useState(true);
+  const [userName, setUserName] = useState("");
+  const [hasEnteredName, setHasEnteredName] = useState(false);
   const [showSpeechBubble, setShowSpeechBubble] = useState(false);
   const [displayedSpeech, setDisplayedSpeech] = useState("");
   const fullSpeech = "Ask a wish, my child 🤗💖 Tell me what is in your heart 💖.";
 
+  const handleNameSubmit = (event) => {
+    event.preventDefault();
+    if (!userName.trim()) return;
+
+    setHasEnteredName(true);
+    setShowNamePopup(false);
+  };
+
   useEffect(() => {
-    // 10-second timer to initiate Ganesha speech bubble
+    if (!hasEnteredName) return;
+
+    // Start Ganesha's speech after the visitor confirms their name.
     const timer = setTimeout(() => {
       setShowSpeechBubble(true);
       if (playBellSound) playBellSound();
     }, 10000);
 
     return () => clearTimeout(timer);
-  }, [playBellSound]);
+  }, [hasEnteredName, playBellSound]);
 
   useEffect(() => {
     if (!showSpeechBubble) return;
@@ -43,6 +56,48 @@ export default function Module2Celebration({ onNext, playBellSound }) {
       className={`relative min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 overflow-hidden transition-all duration-1000 ${showSpeechBubble ? 'bg-purple-950/80' : ''
         }`}
     >
+      <AnimatePresence>
+        {showNamePopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-purple-950/80 px-4 backdrop-blur-sm"
+          >
+            <motion.form
+              initial={{ opacity: 0, y: 24, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.9 }}
+              onSubmit={handleNameSubmit}
+              className="glass-panel-glow w-full max-w-md rounded-2xl border-2 border-amber-400/60 p-6 text-center shadow-[0_0_40px_rgba(255,215,0,0.4)]"
+            >
+              <div className="mb-2 text-4xl">🤗</div>
+              <h2 className="text-2xl font-bold text-amber-200">Enter your name</h2>
+              <p className="mt-2 text-amber-100/80 font-serif italic">
+                Lord Ganesha would love to know who is visiting today.
+              </p>
+              <input
+                autoFocus
+                type="text"
+                value={userName}
+                onChange={(event) => setUserName(event.target.value)}
+                placeholder="Your name"
+                aria-label="Your name"
+                maxLength={60}
+                className="mt-5 w-full rounded-xl border-2 border-amber-400/40 bg-purple-950/80 p-3 text-center text-amber-100 placeholder-amber-300/50 focus:border-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-400/20"
+              />
+              <button
+                type="submit"
+                disabled={!userName.trim()}
+                className="mt-5 w-full rounded-full btn-gold-gradient px-6 py-3 font-bold text-purple-950 shadow-[0_0_20px_rgba(255,215,0,0.5)] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                OK 🙏
+              </button>
+            </motion.form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Golden Light Burst from center when speech appears */}
       {showSpeechBubble && (
         <motion.div
