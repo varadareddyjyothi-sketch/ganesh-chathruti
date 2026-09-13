@@ -8,5 +8,8 @@
     "dev:backend": "npm run dev --prefix backend",
     "build": "npm run build --prefix frontend",
     "start:backend": "npm start --prefix backend"
+  },
+  "dependencies": {
+    "firebase": "^12.19.0"
   }
 }
