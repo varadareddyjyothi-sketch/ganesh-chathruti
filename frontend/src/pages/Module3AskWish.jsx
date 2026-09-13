@@ -4,7 +4,7 @@ import { sendWishToBackend } from '../services/api';
 import { Sparkles, Send, AlertCircle } from 'lucide-react';
 import Diyas from '../components/Diyas';
 
-export default function Module3AskWish({ onSubmitSuccess }) {
+export default function Module3AskWish({ userName, onSubmitSuccess }) {
   const [wishText, setWishText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -21,7 +21,7 @@ export default function Module3AskWish({ onSubmitSuccess }) {
     setIsLoading(true);
 
     try {
-      const response = await sendWishToBackend(wishText.trim());
+      const response = await sendWishToBackend(wishText.trim(), userName);
       setIsLoading(false);
       if (onSubmitSuccess) {
         onSubmitSuccess(wishText.trim(), response?.wishData || response);

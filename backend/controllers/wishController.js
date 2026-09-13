@@ -24,9 +24,16 @@ function sanitizeInput(str) {
  */
 exports.submitWish = async (req, res) => {
   try {
-    const { wish, sessionId } = req.body;
+    const { name, wish, sessionId } = req.body;
 
     // 1. Validation
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      return res.status(400).json({
+        success: false,
+        error: 'Name cannot be empty.'
+      });
+    }
+
     if (!wish || typeof wish !== 'string' || !wish.trim()) {
       return res.status(400).json({
         success: false,
@@ -34,7 +41,14 @@ exports.submitWish = async (req, res) => {
       });
     }
 
+    const cleanName = sanitizeInput(name);
     const cleanWish = sanitizeInput(wish);
+    if (cleanName.length > 60) {
+      return res.status(400).json({
+        success: false,
+        error: 'Name cannot exceed 60 characters.'
+      });
+    }
     if (cleanWish.length > 500) {
       return res.status(400).json({
         success: false,
@@ -60,6 +74,7 @@ exports.submitWish = async (req, res) => {
 
     // 3. Save to Firebase Firestore / Fallback Storage
     const wishData = {
+      name: cleanName,
       wish: cleanWish,
       sessionId: finalSessionId,
       sentiment: sentiment,
@@ -86,6 +101,7 @@ exports.submitWish = async (req, res) => {
       id: docId,
       message: 'Your wish has reached Lord Ganesha 🙏✨',
       wishData: {
+        name: cleanName,
         wish: cleanWish,
         sentiment: sentiment,
         positiveMessage: positiveMessage,

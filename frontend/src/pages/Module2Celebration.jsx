@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import GaneshHero from '../components/GaneshHero';
 import Diyas from '../components/Diyas';
 
-export default function Module2Celebration({ onNext, playBellSound }) {
+export default function Module2Celebration({ onNext, onNameConfirmed, playBellSound }) {
   const [showNamePopup, setShowNamePopup] = useState(true);
   const [userName, setUserName] = useState("");
   const [hasEnteredName, setHasEnteredName] = useState(false);
@@ -15,6 +15,7 @@ export default function Module2Celebration({ onNext, playBellSound }) {
     event.preventDefault();
     if (!userName.trim()) return;
 
+    if (onNameConfirmed) onNameConfirmed(userName.trim());
     setHasEnteredName(true);
     setShowNamePopup(false);
   };

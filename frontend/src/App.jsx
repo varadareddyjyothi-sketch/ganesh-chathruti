@@ -20,6 +20,7 @@ import Module6Final from './pages/Module6Final';
 
 export default function App() {
   const [currentModule, setCurrentModule] = useState(1);
+  const [userName, setUserName] = useState('');
   const [userWishText, setUserWishText] = useState('');
   const [wishResult, setWishResult] = useState(null);
 
@@ -62,6 +63,7 @@ export default function App() {
             <Module2Celebration
               key="module2"
               onNext={() => setCurrentModule(3)}
+              onNameConfirmed={setUserName}
               playBellSound={playBellSound}
             />
           )}
@@ -69,6 +71,7 @@ export default function App() {
           {currentModule === 3 && (
             <Module3AskWish
               key="module3"
+              userName={userName}
               onSubmitSuccess={handleWishSubmitted}
             />
           )}
